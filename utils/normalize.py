@@ -4,9 +4,11 @@ from datetime import datetime
 
 def normalize(df: pd.DataFrame):
 	# Strip leading and trailing space all columns
-	df = df.apply(lambda x: x.str.strip())
+	df[df.columns] = df[df.columns].apply(lambda x: x.str.strip())
 	# Remove consecutive spaces
-	df = df.apply(lambda x: x.str.replace(r'\s+', ' ', regex=True))
+	df[df.columns] = df[df.columns].apply(
+		lambda x: x.str.replace(r'\s+', ' ', regex=True)
+	)
 
 	# Set TitleCase on merchant_name and region
 	title_column = ['merchant_name', 'region']

@@ -2,13 +2,15 @@ from utils.init import get_args, setup_logging, load_config
 from utils.model import Config
 from utils.input import read_data_files
 from utils.normalize import normalize
+from utils.db import ReferenceDB
+from utils.validation import validate_existing_merchant
 
 def consolidate(config: Config):
-	# Read, concat data files and create a copy for transformation
-	original_df = read_data_files(config.input_path.data)
-	df = original_df.copy()
-	# Normalize
-	df = normalize(df)
+	db = ReferenceDB(config.input_path.reference_db)
+	df = read_data_files(config.input_path.data)
+	normalize(df)
+	validate_existing_merchant(df, db)
+	db.close()
 
 if __name__ == "__main__":
 	logger = None
