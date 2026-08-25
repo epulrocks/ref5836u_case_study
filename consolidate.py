@@ -9,6 +9,7 @@ def consolidate(config: Config):
 	db = ReferenceDB(config.input_path.reference_db)
 	df = read_data_files(config.input_path.data)
 	normalize(df)
+	df['rejection_reasons'] = ""
 	validate_existing_merchant(df, db)
 	db.close()
 
