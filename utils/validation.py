@@ -1,4 +1,5 @@
 import pandas as pd
+import re
 
 def validate_existing_merchant(df, db):
 	df['rejection_reasons'] = ""
@@ -52,4 +53,14 @@ def validate_phone_number(df):
 def write_phone_number(row):
 	if len(row["contact_phone"]) < 9:
 		row["rejection_reasons"] += "Contact Number contains less than 9 digits; "
+	return row
+
+def validate_email(df):
+	df[df.columns] = df[df.columns].apply(lambda x: write_email(x), axis=1)
+
+def write_email(row):
+	email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+	if not isinstance(row["contact_email"], str) or \
+		not re.match(email_regex, row["contact_email"]):
+		row["rejection_reasons"] += "Invalid Email; "
 	return row
