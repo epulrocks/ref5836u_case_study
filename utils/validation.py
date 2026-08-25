@@ -40,9 +40,12 @@ def write_existing_id(row):
 	if pd.notnull(row["found_id"]):
 		row["rejection_reasons"] += f"Existing Merchant ID found: {row["found_id"]}; "
 		row["valid_name"] = False
-	if not isinstance(row["merchant_name"], str) or len(row["merchant_name"]) == 0:
+	elif not isinstance(row["merchant_name"], str):
 		row["rejection_reasons"] += "Invalid Merchant Name; "
 		row["valid_name"] = False
+	elif len(row["merchant_name"]) == 0:
+		row["rejection_reasons"] += "Merchant Name Empty; "
+		row["valid_name"] = False	
 	return row
 
 def validate_region(df, db):
@@ -59,8 +62,11 @@ def validate_region(df, db):
 	df[df.columns] = df[df.columns].apply(lambda x: write_region(x), axis=1)
 
 def write_region(row):
-	if pd.isnull(row["pic_name"]) and pd.isnull(row["pic_email"]):
-		row["rejection_reasons"] += "Outside Operating Region; "
+	if isinstance(row["region"], str) and len(row["region"]) == 0:
+		row["rejection_reasons"] += "Region Empty; "
+		row["valid_region"] = False
+	elif pd.isnull(row["pic_name"]) and pd.isnull(row["pic_email"]):
+		row["rejection_reasons"] += "Invalid Region; "
 		row["valid_region"] = False
 	return row
 
