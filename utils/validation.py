@@ -8,10 +8,12 @@ def validation(df, db, ref_date):
 	validate_phone_number(df)
 	validate_email(df)
 	validate_register_date(df, ref_date)
+	validate_category(df)
 	df["rejected"] = df["rejection_reasons"] != ""
 
 def validate_existing_merchant(df, db):
 	df['rejection_reasons'] = ""
+	df['valid_name'] = False
 	db_merchant_list = db.query("SELECT * FROM existing_merchants")
 	existing_name = pd.merge(
 		df,
@@ -37,9 +39,12 @@ def validate_existing_merchant(df, db):
 def write_existing_id(row):
 	if pd.notnull(row["found_id"]):
 		row["rejection_reasons"] += f"Existing Merchant ID found: {row["found_id"]}; "
+	if isinstance(row["merchant_name"], str) and len(row["merchant_name"]) > 0:
+		row["valid_name"] = True
 	return row
 
 def validate_region(df, db):
+	df["valid_region"] = True
 	db_region_pic = db.query("SELECT * FROM region_pic")
 	matched_region = pd.merge(
 		df,
@@ -54,17 +59,21 @@ def validate_region(df, db):
 def write_region(row):
 	if pd.isnull(row["pic_name"]) and pd.isnull(row["pic_email"]):
 		row["rejection_reasons"] += "Outside Operating Region; "
+		row["valid_region"] = False
 	return row
 
 def validate_phone_number(df):
+	df["valid_number"] = True
 	df[df.columns] = df[df.columns].apply(lambda x: write_phone_number(x), axis=1)
 
 def write_phone_number(row):
 	if len(row["contact_phone"]) < 9:
 		row["rejection_reasons"] += "Contact Number contains less than 9 digits; "
+		row["valid_number"] = False
 	return row
 
 def validate_email(df):
+	df["valid_email"] = True
 	df[df.columns] = df[df.columns].apply(lambda x: write_email(x), axis=1)
 
 def write_email(row):
@@ -72,12 +81,25 @@ def write_email(row):
 	if not isinstance(row["contact_email"], str) or \
 		not re.match(email_regex, row["contact_email"]):
 		row["rejection_reasons"] += "Invalid Email; "
+		row["valid_email"] = False
 	return row
 
 def validate_register_date(df, ref_date):
+	df["valid_date"] = True
 	df[df.columns] = df[df.columns].apply(lambda x: write_register_date(x, ref_date), axis=1)
 
 def write_register_date(row, ref_date):
 	if not isinstance(row["registration_date"], date) or row["registration_date"] > ref_date:
 		row["rejection_reasons"] += "Invalid Registration Date; "
+		row["valid_date"] = False
+	return row
+
+def validate_category(df):
+	df["valid_category"] = True
+	df[df.columns] = df[df.columns].apply(lambda x: write_category(x), axis=1)
+
+def write_category(row):
+	if pd.isnull(row["canonical_category"]):
+		row["rejection_reasons"] += "Invalid Category; "
+		row["valid_category"] = False
 	return row
