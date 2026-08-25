@@ -2,6 +2,14 @@ import pandas as pd
 import re
 from datetime import date
 
+def validation(df, db, ref_date):
+	validate_existing_merchant(df, db)
+	validate_region(df, db)
+	validate_phone_number(df)
+	validate_email(df)
+	validate_register_date(df, ref_date)
+	df["rejected"] = df["rejection_reasons"] != ""
+
 def validate_existing_merchant(df, db):
 	df['rejection_reasons'] = ""
 	db_merchant_list = db.query("SELECT * FROM existing_merchants")
