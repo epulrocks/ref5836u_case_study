@@ -13,7 +13,7 @@ def validation(df, db, ref_date):
 
 def validate_existing_merchant(df, db):
 	df['rejection_reasons'] = ""
-	df['valid_name'] = False
+	df['valid_name'] = True
 	db_merchant_list = db.query("SELECT * FROM existing_merchants")
 	existing_name = pd.merge(
 		df,
@@ -39,8 +39,10 @@ def validate_existing_merchant(df, db):
 def write_existing_id(row):
 	if pd.notnull(row["found_id"]):
 		row["rejection_reasons"] += f"Existing Merchant ID found: {row["found_id"]}; "
-	if isinstance(row["merchant_name"], str) and len(row["merchant_name"]) > 0:
-		row["valid_name"] = True
+		row["valid_name"] = False
+	if not isinstance(row["merchant_name"], str) or len(row["merchant_name"]) == 0:
+		row["rejection_reasons"] += "Invalid Merchant Name; "
+		row["valid_name"] = False
 	return row
 
 def validate_region(df, db):
