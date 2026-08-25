@@ -15,7 +15,7 @@ def normalize(df: pd.DataFrame):
 	df[title_column] = df[title_column].apply(lambda x: x.str.title())
 
 	# Set Lowercase on contact_email
-	lower_column = ['contact_email']
+	lower_column = ['contact_email', 'business_category_freetext']
 	df[lower_column] = df[lower_column].apply(lambda x: x.str.lower())
 
 	# Only retain valid (+ and digits) characters from contact_phone

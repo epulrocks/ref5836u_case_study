@@ -17,4 +17,6 @@ class Config(BaseModel):
 	output_path: Path
 	reference_date: date | None = None
 
-
+class CategoryMap(BaseModel):
+    freetext: str
+    canonical_category: str
