@@ -45,3 +45,11 @@ def write_region(row):
 	if pd.isnull(row["pic_name"]) and pd.isnull(row["pic_email"]):
 		row["rejection_reasons"] += "Outside Operating Region; "
 	return row
+
+def validate_phone_number(df):
+	df[df.columns] = df[df.columns].apply(lambda x: write_phone_number(x), axis=1)
+
+def write_phone_number(row):
+	if len(row["contact_phone"]) < 9:
+		row["rejection_reasons"] += "Contact Number contains less than 9 digits; "
+	return row
