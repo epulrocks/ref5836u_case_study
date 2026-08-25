@@ -3,14 +3,14 @@ from utils.model import Config
 from utils.input import read_data_files
 from utils.normalize import normalize
 from utils.db import ReferenceDB
-from utils.validation import validate_existing_merchant
+from utils.validation import validate_existing_merchant, validate_region
 
 def consolidate(config: Config):
 	db = ReferenceDB(config.input_path.reference_db)
 	df = read_data_files(config.input_path.data)
 	normalize(df)
-	df['rejection_reasons'] = ""
 	validate_existing_merchant(df, db)
+	validate_region(df, db)
 	db.close()
 
 if __name__ == "__main__":
