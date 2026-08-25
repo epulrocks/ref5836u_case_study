@@ -5,6 +5,7 @@ from utils.normalize import normalize
 from utils.db import ReferenceDB
 from utils.validation import validate_existing_merchant, validate_region
 from utils.validation import validate_phone_number, validate_email
+from utils.validation import validate_register_date
 
 def consolidate(config: Config):
 	db = ReferenceDB(config.input_path.reference_db)
@@ -14,6 +15,7 @@ def consolidate(config: Config):
 	validate_region(df, db)
 	validate_phone_number(df)
 	validate_email(df)
+	validate_register_date(df, config.reference_date)
 	db.close()
 
 if __name__ == "__main__":

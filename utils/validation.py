@@ -1,5 +1,6 @@
 import pandas as pd
 import re
+from datetime import date
 
 def validate_existing_merchant(df, db):
 	df['rejection_reasons'] = ""
@@ -63,4 +64,12 @@ def write_email(row):
 	if not isinstance(row["contact_email"], str) or \
 		not re.match(email_regex, row["contact_email"]):
 		row["rejection_reasons"] += "Invalid Email; "
+	return row
+
+def validate_register_date(df, ref_date):
+	df[df.columns] = df[df.columns].apply(lambda x: write_register_date(x, ref_date), axis=1)
+
+def write_register_date(row, ref_date):
+	if not isinstance(row["registration_date"], date) or row["registration_date"] > ref_date:
+		row["rejection_reasons"] += "Invalid Registration Date; "
 	return row
