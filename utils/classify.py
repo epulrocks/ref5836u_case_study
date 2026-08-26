@@ -2,6 +2,9 @@ import os
 from google import genai
 from .model import CategoryMap
 from time import sleep
+import logging
+
+logger = logging.getLogger(__name__)
 
 def classify(df, db):
 	freetext_list = df["business_category_freetext"].dropna().unique()
@@ -30,6 +33,10 @@ def get_classification_map(freetext_list, category_list):
 	while retryCount < 3:
 		try:
 			retryCount += 1
+			if retryCount == 1:
+				logger.info("Prompting Gemini LLM to classify categories...")
+			else:
+				logger.info(f"Retrying Gemini LLM to classify categories... Attempt {retryCount}")
 			response = client.models.generate_content(
 				model="gemini-3.6-flash",
 				contents=prompt,
@@ -50,6 +57,7 @@ def get_classification_map(freetext_list, category_list):
 						# plus 10% buffer
 						delay = float(delay_str.replace('s', '')) * 1.1
 						break
+				logger.error(f"Attempt failed. Retrying after {delay} seconds...")
 				sleep(delay)
 			else:
 				raise e

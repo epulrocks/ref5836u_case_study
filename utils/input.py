@@ -2,8 +2,9 @@ import pandas as pd
 from pathlib import Path
 import logging
 
+logger = logging.getLogger(__name__)
+
 def read_data_files(data_path: Path):
-	logger = logging.getLogger("main")
 	data_files_list = data_path.iterdir()
 	df_list = []
 	for data_file in data_files_list:

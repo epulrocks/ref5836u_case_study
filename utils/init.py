@@ -7,6 +7,8 @@ import yaml
 from .model import Config
 from pydantic import ValidationError
 
+logger = logging.getLogger(__name__)
+
 def get_ts(ts_format: str = "%Y%m%d%H%M%S"):
 	return datetime.now(timezone.utc).strftime(ts_format)
 
@@ -24,18 +26,19 @@ def get_args():
 
 def setup_logging(debug: bool = False, log_folder: str = "logs"):
 	log_level = logging.DEBUG if debug else logging.INFO
-	logger = logging.getLogger("main")
-	logger.setLevel(log_level)
+	root_logger = logging.getLogger()
+	root_logger.setLevel(log_level)
+	if root_logger.hasHandlers():
+		root_logger.handlers.clear()
 	formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 	Path(log_folder).mkdir(exist_ok=True)
 	file_handler = logging.FileHandler(f"{log_folder}/{get_ts()}.log")
 	file_handler.setFormatter(formatter)
-	logger.addHandler(file_handler)
+	root_logger.addHandler(file_handler)
 	console_handler = logging.StreamHandler(sys.stdout)
 	console_handler.setFormatter(formatter)
-	logger.addHandler(console_handler)
+	root_logger.addHandler(console_handler)
 	logger.debug("Debug: On")
-	return logger
 
 def load_config(config_path: str):
 	path = Path(config_path)
@@ -49,7 +52,7 @@ def load_config(config_path: str):
 			exp_msg = f"Error while loading config file: '{config_path}'"
 			for err in e.errors():
 				exp_msg += f"\n\t{" -> ".join(err['loc'])}: \t{err['msg']}"
-			logging.getLogger("main").error(exp_msg)
+			logger.error(exp_msg)
 			sys.exit(1)
 		Path(config.output_path).mkdir(exist_ok=True)
 		config.reference_date = config.reference_date or datetime.now().date()
