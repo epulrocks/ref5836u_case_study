@@ -8,7 +8,10 @@ def read_data_files(data_path: Path):
 	df_list = []
 	for data_file in data_files_list:
 		try:
-			df_list.append(pd.read_csv(data_file.absolute()))
+			df = pd.read_csv(data_file.absolute())
+			df["source_file"] = data_file.name
+			df["file_submission"] = df["source_file"] + " - " + df["submission_id"]
+			df_list.append(df)
 		except UnicodeDecodeError as e:
 			# A '.DS_Store' file in 'data' folder is causing read error
 			# This error handling only shows read error in the log file/terminal

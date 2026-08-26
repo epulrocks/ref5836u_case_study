@@ -6,6 +6,7 @@ from utils.normalize import normalize
 from utils.db import ReferenceDB
 from utils.validation import validation
 from utils.classify import classify
+from utils.deduplicate import deduplicate
 
 def consolidate(config: Config):
 	db = ReferenceDB(config.input_path.reference_db)
@@ -13,6 +14,7 @@ def consolidate(config: Config):
 	normalize(df)
 	classify(df, db)
 	validation(df, db, config.reference_date)
+	dedupe_df = deduplicate(df)
 	db.close()
 
 if __name__ == "__main__":
