@@ -6,6 +6,7 @@ However, there are times AI came to the rescue and helped me during the developm
 	- This has been my method to find answer after I failed to get results from Google Search, or, when I have something more complex to ask.
 	- For some code blocks that are commonly used by me, but almost impossible to memorize.
 	- For some errors that I don't understand, I usually just paste the error into the chat and it gives me suggestions on what I need to look for. Doing the same method on Google Search hardly gives me the solution on the first search. This is because Gemini understands what kind of work, or what tools we are currently using, so usually Gemini was able to give me suggestions tailored to my case.
+	- For spelling check on my markdown files
 
 2) Github Copilot:
 	- This tools helps me a lot in terms of code completion.
@@ -14,10 +15,10 @@ However, there are times AI came to the rescue and helped me during the developm
 	- It also helps on some typos that I did, it even gave the correct spelling and syntax suggestion even before I got the chance to press debug. This made development fast since I don't need to wait for a failed debug to realize my mistake
 
 ## What I delegated to AI vs. decided/wrote myself
-In this project, I decide the overall process flow as this is something similar to what I have done before and I have a clear picture of what to write. I did not delegate much of the overall architecture process, but AI definitely helped me a lot in debugging process and recalling code structures. However, in other project that I am not familliar with, usually I explain the target and available resources to Gemini to get suggestion on planning the architecture.
+In this project, I decide the overall process flow as this is something similar to what I have done before and I have a clear picture of what to write. I did not delegate much of the overall architecture process, but AI definitely helped me a lot in debugging process and recalling code structures. However, in other project that I am not familiar with, usually I explain the target and available resources to Gemini to get suggestion on planning the architecture.
 
 ## Where the AI was **wrong or misleading**
-A few times that AI suggestted me code that does not work, or maybe I did not implement it properly. One occurrence I can remember is when I wanted to silence a warning received from Gemini API module, and the code suggestion does not work. Unfortunately, I cannot determine if that suggestion from Gemini was invalid or not, as I decided not to use it anyway after realizing that the warning does not appear in log files.
+A few times that AI suggested me code that does not work, or maybe I did not implement it properly. One occurrence I can remember is when I wanted to silence a warning received from Gemini API module, and the code suggestion does not work. Unfortunately, I cannot determine if that suggestion from Gemini was invalid or not, as I decided not to use it anyway after realizing that the warning does not appear in log files.
 
 ## Comment on Category Classification using AI
 As mentioned in README, I believe the current method of using LLM is reliable, however, it might be costly in the long run. We should try to implement our own model to classify those freetext categories instead if this automation was to be implemented in a long run.
