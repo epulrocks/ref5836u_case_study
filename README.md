@@ -8,7 +8,7 @@ For the AI part of the project, I am using Gemini API, so we do need the Gemini 
 
 ## Obtaining Gemini API Key
 I already had my key, so I wont be able to accurately explain the steps. But the steps should be something like this:
-1) Login to [aistudio.google.com](aistudio.google.com)
+1) Login to [aistudio.google.com](https://aistudio.google.com)
 2) Go to 'API Keys' in left menu, or, go to this link: [https://aistudio.google.com/api-keys](https://aistudio.google.com/api-keys)
 3) Click on 'Create New API Key' on top right
 4) Give a name to your key and choose cloud project to assign to
