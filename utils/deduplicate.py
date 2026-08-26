@@ -11,7 +11,7 @@ def deduplicate(df):
 	dedupe_df = dedupe_df[~dedupe_df.duplicated(subset="sort_key", keep="first")]
 	dedupe_df.sort_index(inplace=True)
 
-	dedupe_df["duplicate_collapsed"] = dedupe_df["merchant_name"].map(dupe_group_dict)
+	dedupe_df["duplicates_collapsed"] = dedupe_df["merchant_name"].map(dupe_group_dict)
 	dedupe_df = dedupe_df.apply(lambda x: format_dupe_list(x), axis=1)
 
 	return dedupe_df
@@ -26,7 +26,7 @@ def set_sort_key(row):
 	return row
 
 def format_dupe_list(row):
-	if isinstance(row["duplicate_collapsed"], list):
-		row["duplicate_collapsed"].remove(row["file_submission"])
-		row["duplicate_collapsed"] = "\n".join(row["duplicate_collapsed"])
+	if isinstance(row["duplicates_collapsed"], list):
+		row["duplicates_collapsed"].remove(row["file_submission"])
+		row["duplicates_collapsed"] = "\n".join(row["duplicates_collapsed"])
 	return row

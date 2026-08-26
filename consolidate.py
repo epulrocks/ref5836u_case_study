@@ -7,14 +7,19 @@ from utils.db import ReferenceDB
 from utils.validation import validation
 from utils.classify import classify
 from utils.deduplicate import deduplicate
+from utils.output import output
+from utils.split import split
 
 def consolidate(config: Config):
 	db = ReferenceDB(config.input_path.reference_db)
-	df = read_data_files(config.input_path.data)
+	original_df = read_data_files(config.input_path.data)
+	df = original_df.copy()
 	normalize(df)
 	classify(df, db)
 	validation(df, db, config.reference_date)
-	dedupe_df = deduplicate(df)
+	accepted_df, original_rejected_df = split(df, original_df)
+	dedupe_accepted_df = deduplicate(accepted_df)
+	output(dedupe_accepted_df, original_rejected_df, config.output_path)
 	db.close()
 
 if __name__ == "__main__":
