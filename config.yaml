@@ -1,5 +1,5 @@
 input_path:
-  data: ../data/
-  reference_db: ../reference.db
-output_path: ../output/
+  data: ./data/
+  reference_db: ./reference.db
+output_path: ./output/
 reference_date: 2026-06-01
