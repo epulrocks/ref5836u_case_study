@@ -1,6 +1,7 @@
 import os
 from google import genai
 from .model import CategoryMap
+from time import sleep
 
 def classify(df, db):
 	freetext_list = df["business_category_freetext"].dropna().unique()
@@ -25,14 +26,31 @@ def get_classification_map(freetext_list, category_list):
 	canonical_category:
 	{"\n".join(category_list)}
 	"""
-	response = client.models.generate_content(
-		model="gemini-3.6-flash",
-		contents=prompt,
-		config={
-        	"response_mime_type": "application/json",
-			"response_schema": list[CategoryMap],
-		},
-	)
-	return {
-		catmap.freetext: catmap.canonical_category for catmap in response.parsed
-	}
+	retryCount = 0
+	while retryCount < 3:
+		try:
+			retryCount += 1
+			response = client.models.generate_content(
+				model="gemini-3.6-flash",
+				contents=prompt,
+				config={
+					"response_mime_type": "application/json",
+					"response_schema": list[CategoryMap],
+				},
+			)
+			return {
+				catmap.freetext: catmap.canonical_category for catmap in response.parsed
+			}
+		except genai.errors.APIError as e:
+			if e.code == 429:
+				delay = 30
+				for detail in e.details.get("error", {}).get("details", []):
+					if 'retryDelay' in detail:
+						delay_str = detail['retryDelay']
+						# plus 10% buffer
+						delay = float(delay_str.replace('s', '')) * 1.1
+						break
+				sleep(delay)
+			else:
+				raise e
+	raise Exception("Failed to classify after 3 attempts")
